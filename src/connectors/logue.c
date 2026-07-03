@@ -18,7 +18,6 @@
  *   along with Elektroid. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <asm-generic/errno-base.h>
 #include <json-glib/json-glib.h>
 #include <zip.h>
 #include <zlib.h>
