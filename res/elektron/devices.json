@@ -38,7 +38,9 @@
       ],
       "sound": [
         "arsnd"
-      ]
+      ],
+      "ram": null,
+      "track": null
     },
     "storage": [
       "+Drive",
@@ -102,7 +104,9 @@
       ],
       "sound": [
         "arsnd"
-      ]
+      ],
+      "ram": null,
+      "track": null
     },
     "storage": [
       "+Drive",

@@ -3564,11 +3564,38 @@ elektron_ram_set_sample (struct backend *backend,
 
   // It takes a while for the result to be available
   usleep (500000);
-  task_control_set_progress (control, 0.5);
+  if (control)
+    {
+      task_control_set_progress (control, 0.5);
+    }
   usleep (500000);
-  task_control_set_progress (control, 1.0);
+  if (control)
+    {
+      task_control_set_progress (control, 1.0);
+    }
 
   return 0;
+}
+
+static gint
+elektron_ram_copy_sample (struct backend *backend, const gchar *src,
+			  const gchar *dst)
+{
+  gint err;
+  guint id;
+
+  err = common_slot_get_id_from_path (dst, &id);
+  if (err)
+    {
+      return err;
+    }
+
+  if (!elektron_sample_file_exists (backend, src))
+    {
+      return -ENOENT;
+    }
+
+  return elektron_ram_set_sample (backend, src, id, 0xff, NULL);
 }
 
 static gint
@@ -4102,6 +4129,7 @@ static const struct fs_operations FS_DIGITAKT_RAM_OPERATIONS = {
   .readdir = elektron_ram_read_dir,
   .print_item = common_print_item,
   .delete = elektron_ram_clear_sample,
+  .copy = elektron_ram_copy_sample,
   .download = elektron_ram_download_sample,
   .upload = elektron_ram_upload_sample,
   .load = elektron_sample_load,
