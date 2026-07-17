@@ -1049,7 +1049,9 @@ cli_print_help (const gchar *argv0)
 {
   gchar *exec_name = g_path_get_basename (argv0);
   fprintf (stderr, "%s\n", PACKAGE_STRING);
-  fprintf (stderr, "Usage: %s [ -v ] command\n", exec_name);
+  fprintf (stderr, "Usage: %s [ -kv ] command\n", exec_name);
+  fprintf (stderr, "  -k: Keep the MIDI device transport running when connecting\n");
+  fprintf (stderr, "  -v: Increase logging verbosity\n");
   fprintf (stderr, "\n");
   fprintf (stderr, "Device commands:\n");
   cli_print_help_cmd ("ld", NULL, "List devices");
@@ -1102,7 +1104,7 @@ main (int argc, gchar *argv[])
   gint c;
   gint err;
   gchar *command;
-  gint vflg = 0, errflg = 0;
+  gint kflg = 0, vflg = 0, errflg = 0;
 
   setup ();
 
@@ -1121,10 +1123,13 @@ main (int argc, gchar *argv[])
   sigaction (SIGHUP, &action, NULL);
 #endif
 
-  while ((c = getopt (argc, argv, "v")) != -1)
+  while ((c = getopt (argc, argv, "kv")) != -1)
     {
       switch (c)
 	{
+	case 'k':
+	  kflg++;
+	  break;
 	case 'v':
 	  vflg++;
 	  break;
@@ -1158,6 +1163,10 @@ main (int argc, gchar *argv[])
   regpref_register ();
   preferences_load ();
   preferences_set_boolean (PREF_KEY_MIX, FALSE);	//This might be required by devices using the audio link.
+  if (kflg)
+    {
+      preferences_set_boolean (PREF_KEY_STOP_DEVICE_WHEN_CONNECTING, FALSE);
+    }
 
   if (!strcmp (command, "ld") || !strcmp (command, "list-devices"))
     {
